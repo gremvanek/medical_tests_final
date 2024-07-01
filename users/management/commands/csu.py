@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from drf import settings
+from config import settings
 from users.models import User
 
 
