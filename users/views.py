@@ -1,3 +1,5 @@
+import random
+
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, permission_required
@@ -12,7 +14,6 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.generic import FormView, CreateView
 
-from config import settings
 from config.settings import EMAIL_HOST_USER
 from .forms import UserForm, UserRegisterForm
 from .models import User
