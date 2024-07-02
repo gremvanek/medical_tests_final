@@ -1,5 +1,7 @@
 from django.db import models
 
+from config import settings
+
 NULLABLE = {'null': True, 'blank': True}
 
 
@@ -33,3 +35,17 @@ class Service(models.Model):
     class Meta:
         verbose_name = "Мед.услуга"
         verbose_name_plural = "Мед.услуги"
+
+
+class Cart(models.Model):
+    """Корзина"""
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Клиент')
+    services = models.ManyToManyField(Service, verbose_name='Услуги')
+    date = models.DateTimeField(verbose_name='дата и время', **NULLABLE)
+
+    def __str__(self):
+        return f"{self.client} - {self.services}"
+
+    class Meta:
+        verbose_name = "Корзина"
+        verbose_name_plural = "Корзины"
