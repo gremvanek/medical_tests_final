@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Словарь для указания полей, допускающих null значения
-NULLABLE = {'null': True, 'blank': True}
+NULLABLE = {"null": True, "blank": True}
 
 
 class User(AbstractUser):
@@ -31,24 +31,32 @@ class User(AbstractUser):
     """
 
     class Meta:
-        verbose_name = 'Пользователь'  # Отображаемое имя в единственном числе
-        verbose_name_plural = 'Пользователи'  # Отображаемое имя во множественном числе
+        verbose_name = "Пользователь"  # Отображаемое имя в единственном числе
+        verbose_name_plural = "Пользователи"  # Отображаемое имя во множественном числе
         permissions = [
-            ("set_is_active", "Активация пользователя"),  # Разрешение на активацию пользователей
-            ("block_user", "Может блокировать пользователей"),  # Разрешение на блокировку пользователей
+            (
+                "set_is_active",
+                "Активация пользователя",
+            ),  # Разрешение на активацию пользователей
+            (
+                "block_user",
+                "Может блокировать пользователей",
+            ),  # Разрешение на блокировку пользователей
         ]
 
-    email = models.EmailField(unique=True, verbose_name='Почта')
-    username = models.CharField(max_length=150, unique=True, verbose_name='Имя пользователя')
+    email = models.EmailField(unique=True, verbose_name="Почта")
+    username = models.CharField(
+        max_length=150, unique=True, verbose_name="Имя пользователя"
+    )
 
-    phone = models.CharField(max_length=35, verbose_name='Номер телефона', **NULLABLE)
-    avatar = models.ImageField(upload_to='users/', verbose_name='Аватар', **NULLABLE)
-    country = models.CharField(max_length=35, verbose_name='Страна', **NULLABLE)
+    phone = models.CharField(max_length=35, verbose_name="Номер телефона", **NULLABLE)
+    avatar = models.ImageField(upload_to="users/", verbose_name="Аватар", **NULLABLE)
+    country = models.CharField(max_length=35, verbose_name="Страна", **NULLABLE)
 
-    is_verified = models.BooleanField(default=False, verbose_name='Верификация')
-    token = models.CharField(max_length=100, verbose_name='Токен', **NULLABLE)
+    is_verified = models.BooleanField(default=False, verbose_name="Верификация")
+    token = models.CharField(max_length=100, verbose_name="Токен", **NULLABLE)
 
-    have_permissions = models.BooleanField(default=False, verbose_name='Права доступа')
+    have_permissions = models.BooleanField(default=False, verbose_name="Права доступа")
     is_blocked = models.BooleanField(default=False, verbose_name="Заблокирован")
 
     USERNAME_FIELD = "email"
