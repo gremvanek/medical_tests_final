@@ -6,7 +6,7 @@ from django.views.decorators.cache import cache_page
 from users.views import user_list, user_detail, user_create, user_update, user_delete, user_logout, \
     ResetPasswordView, CustomPasswordResetConfirmView, RegisterView, activate_user
 
-app_name = 'user'  # Пространство имен для приложения
+app_name = 'users'  # Пространство имен для приложения
 
 urlpatterns = [
     path('users/', user_list, name='u_list'),
@@ -14,7 +14,7 @@ urlpatterns = [
     path('user/create/', user_create, name='u_create'),
     path('user/<int:pk>/update/', user_update, name='u_update'),
     path('user/<int:pk>/delete/', user_delete, name='u_delete'),
-    path('user/', LoginView.as_view(template_name='user/u_login.html'), name='u_login'),
+    path('user/', LoginView.as_view(template_name='users/u_login.html'), name='u_login'),
     path('user/verify/', activate_user, name='verify'),
     path('logout/', user_logout, name='u_logout'),
     path('register/', RegisterView.as_view(), name='u_register'),

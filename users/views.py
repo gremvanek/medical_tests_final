@@ -24,7 +24,7 @@ from .models import User
 @permission_required("user.view_user", raise_exception=True)
 def user_list(request):
     users = User.objects.all()
-    return render(request, "user/u_list.html", {"users": users})
+    return render(request, "users/u_list.html", {"users": users})
 
 
 # Получение пользователя или обработка исключения
@@ -36,7 +36,7 @@ def get_user_or_404(pk):
 @login_required
 def user_detail(request, pk):
     user = get_user_or_404(pk)
-    return render(request, "user/u_detail.html", {"user": user})
+    return render(request, "users/u_detail.html", {"user": user})
 
 
 # Создание пользователя
@@ -47,10 +47,10 @@ def user_create(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Пользователь успешно создан.")
-            return redirect("user:u_list")
+            return redirect("users:u_list")
     else:
         form = UserForm()
-    return render(request, "user/u_form.html", {"form": form})
+    return render(request, "users/u_form.html", {"form": form})
 
 
 # Редактирование пользователя
@@ -62,10 +62,10 @@ def user_update(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Пользователь успешно отредактирован.")
-            return redirect("user:u_list")
+            return redirect("users:u_list")
     else:
         form = UserForm(instance=user)
-    return render(request, "user/u_form.html", {"form": form})
+    return render(request, "users/u_form.html", {"form": form})
 
 
 # Удаление пользователя
@@ -74,7 +74,7 @@ def user_delete(request, pk):
     user = get_user_or_404(pk)
     user.delete()
     messages.success(request, "Пользователь успешно удален.")
-    return redirect("user:user_list")
+    return redirect("users:user_list")
 
 
 # Подтверждение почтового адреса пользователя
@@ -91,7 +91,7 @@ def activate_user(request):
             messages.error(request, "Пользователь не найден для верификации.")
     else:
         messages.error(request, "Неверный запрос для верификации.")
-    return redirect(reverse_lazy("user:u_login"))
+    return redirect(reverse_lazy("users:u_login"))
 
 
 # Выход пользователя
@@ -99,15 +99,15 @@ def activate_user(request):
 def user_logout(request):
     logout(request)
     messages.success(request, "Вы успешно вышли.")
-    return redirect("user:u_login")
+    return redirect("users:u_login")
 
 
 # Регистрация нового пользователя
 class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
-    template_name = "user/register.html"
-    success_url = reverse_lazy("user:u_login")
+    template_name = "users/register.html"
+    success_url = reverse_lazy("users:u_login")
 
     def form_valid(self, form):
         new_user = form.save(commit=False)
@@ -141,8 +141,8 @@ class RegisterView(CreateView):
 # Сброс пароля пользователя
 class ResetPasswordView(FormView):
     form_class = PasswordResetForm
-    template_name = "user/change_password.html"
-    success_url = reverse_lazy("user:u_login")
+    template_name = "users/change_password.html"
+    success_url = reverse_lazy("users:u_login")
 
     def form_valid(self, form):
         email = form.cleaned_data["email"]
@@ -177,8 +177,8 @@ class ResetPasswordView(FormView):
 
 # Подтверждение сброса пароля пользователя
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = "user/change_password.html"
-    success_url = reverse_lazy("user:u_login")
+    template_name = "users/change_password.html"
+    success_url = reverse_lazy("users:u_login")
 
     def form_valid(self, form):
         messages.success(
