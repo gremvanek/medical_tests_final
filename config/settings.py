@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Мной добавление апсы
     "users",
+    'medical_services',
 ]
 
 MIDDLEWARE = [
