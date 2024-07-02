@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 0 auto;">
+    <form method="post" style="max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: rgba(255, 255, 255, 0.8);">
+        {% csrf_token %}
+        {{ form.as_p }}
+<!--        Сука 3 часа искал чем причина. Добавил строку type='hidden' и заработало!-->
+        <input type="hidden" name="id" value="{{ user.id }}">
+        <button type="submit" class="btn btn-success">Регистрация</button>
+    </form>
+</div>
+{% endblock %}
