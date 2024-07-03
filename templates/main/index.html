@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index - Medilab Bootstrap Template</title>
+  <title>Medilab</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -15,7 +15,8 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -41,71 +42,104 @@
 
   <header id="header" class="header sticky-top">
 
-    <div class="topbar d-flex align-items-center">
-      <div class="container d-flex justify-content-center justify-content-md-between">
+    <!-- Top Bar -->
+    <div class="topbar d-flex align-items-center bg-blue">
+      <div class="container d-flex justify-content-between">
         <div class="contact-info d-flex align-items-center">
-          <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:contact@example.com">contact@example.com</a></i>
-          <i class="bi bi-phone d-flex align-items-center ms-4"><span>+1 5589 55488 55</span></i>
+          <i class="bi bi-envelope d-flex align-items-center me-2">
+            <a href="mailto:contact@example.com">gremvanek@gmail.com</a>
+          </i>
+          <i class="bi bi-phone d-flex align-items-center me-2">
+            <span>+1 5589 55488 55</span>
+          </i>
+          <ul class="nav d-flex align-items-center ms-auto">
+            {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+            <li class="nav-item me-2">
+              <a class="nav-link text-white" href="{% url 'users:u_list' %}">Список пользователей</a>
+            </li>
+            {% endif %}
+            <li class="nav-item me-2">
+              <a class="nav-link text-white" href="{% url 'users:u_detail' pk=user.pk %}">Профиль</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="{% url 'users:u_logout' %}">Выход</a>
+            </li>
+            {% else %}
+            <li class="nav-item me-2">
+              <a class="nav-link text-white" href="{% url 'users:u_login' %}">Вход</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="{% url 'users:u_register' %}">Регистрация</a>
+            </li>
+            {% endif %}
+          </ul>
         </div>
-        <div class="social-links d-none d-md-flex align-items-center">
-          <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+
+        <div class="social-links d-flex align-items-center d-none d-md-flex">
+          <a href="#" class="twitter me-2"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="facebook me-2"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="instagram me-2"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="linkedin me-2"><i class="bi bi-linkedin"></i></a>
         </div>
       </div>
-    </div><!-- End Top Bar -->
+    </div>
+    <!-- End Top Bar -->
 
-    <div class="branding d-flex align-items-center">
-
-      <div class="container position-relative d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center me-auto">
+    <!-- Branding -->
+    <div class="branding d-flex align-items-center bg-white">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a href="{% url 'users:u_login' %}" class="logo d-flex align-items-center me-auto text-decoration-none">
           <!-- Uncomment the line below if you also wish to use an image logo -->
           <!-- <img src="assets/img/logo.png" alt=""> -->
-          <h1 class="sitename">Medilab</h1>
+          <h1 class="sitename m-0">Медилабс</h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
-          <ul>
-            <li><a href="#hero" class="active">Home<br></a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#departments">Departments</a></li>
-            <li><a href="#doctors">Doctors</a></li>
-            <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-              <ul>
-                <li><a href="#">Dropdown 1</a></li>
-                <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                  <ul>
-                    <li><a href="#">Deep Dropdown 1</a></li>
-                    <li><a href="#">Deep Dropdown 2</a></li>
-                    <li><a href="#">Deep Dropdown 3</a></li>
-                    <li><a href="#">Deep Dropdown 4</a></li>
-                    <li><a href="#">Deep Dropdown 5</a></li>
-                  </ul>
-                </li>
-                <li><a href="#">Dropdown 2</a></li>
-                <li><a href="#">Dropdown 3</a></li>
-                <li><a href="#">Dropdown 4</a></li>
-              </ul>
-            </li>
-            <li><a href="#contact">Contact</a></li>
+          <ul class="nav d-flex align-items-center">
+            <li class="nav-item"><a class="nav-link" href="#">Главная</a></li>
+            <li class="nav-item"><a class="nav-link" href="#about">О нас</a></li>
+            <li class="nav-item"><a class="nav-link" href="#services">Услуги</a></li>
+            <li class="nav-item"><a class="nav-link" href="#departments">Отделы</a></li>
+            <li class="nav-item"><a class="nav-link" href="#doctors">Доктора</a></li>
+            <!--            <li class="nav-item dropdown">-->
+            <!--              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"-->
+            <!--                 aria-expanded="false">Dropdown <i class="bi bi-chevron-down"></i></a>-->
+            <!--              <ul class="dropdown-menu">-->
+            <!--                <li><a class="dropdown-item" href="#">Dropdown 1</a></li>-->
+            <!--                <li class="dropdown">-->
+            <!--                  <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"-->
+            <!--                     aria-expanded="false">Deep Dropdown <i class="bi bi-chevron-right"></i></a>-->
+            <!--                  <ul class="dropdown-menu">-->
+            <!--                    <li><a class="dropdown-item" href="#">Deep Dropdown 1</a></li>-->
+            <!--                    <li><a class="dropdown-item" href="#">Deep Dropdown 2</a></li>-->
+            <!--                    <li><a class="dropdown-item" href="#">Deep Dropdown 3</a></li>-->
+            <!--                    <li><a class="dropdown-item" href="#">Deep Dropdown 4</a></li>-->
+            <!--                    <li><a class="dropdown-item" href="#">Deep Dropdown 5</a></li>-->
+            <!--                  </ul>-->
+            <!--                </li>-->
+            <!--                <li><a class="dropdown-item" href="#">Dropdown 2</a></li>-->
+            <!--                <li><a class="dropdown-item" href="#">Dropdown 3</a></li>-->
+            <!--                <li><a class="dropdown-item" href="#">Dropdown 4</a></li>-->
+            <!--              </ul>-->
+            <!--            </li>-->
+            <li class="nav-item"><a class="nav-link" href="#contact">Контакты</a></li>
           </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="cta-btn d-none d-sm-block" href="#appointment">Make an Appointment</a>
-
+        <a class="cta-btn d-none d-sm-block" href="#appointment">Свяжитесь с нами</a>
       </div>
-
     </div>
+    <!-- End Branding -->
 
   </header>
+
 
   <main class="main">
 
     <!-- Hero Section -->
-    <section id="hero" class="hero section light-background">
+    <section id="home" class="hero section light-background">
 
       <img src="{% static 'assets/img/hero-bg.jpg' %}" alt="" data-aos="fade-in">
 
@@ -115,7 +149,8 @@
           <h2>WELCOME TO MEDILAB</h2>
           <p>We are team of talented designers making websites with Bootstrap</p>
         </div><!-- End Welcome -->
-
+        {% block content %}
+        {% endblock %}
         <div class="content row gy-4">
           <div class="col-lg-4 d-flex align-items-stretch">
             <div class="why-box" data-aos="zoom-out" data-aos-delay="200">
@@ -913,12 +948,13 @@
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>Contact</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+        <h2>Контакты</h2>
       </div><!-- End Section Title -->
 
       <div class="mb-5" data-aos="fade-up" data-aos-delay="200">
-        <iframe style="border:0; width: 100%; height: 270px;" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus" frameborder="0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe style="border:0; width: 100%; height: 270px;"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1558304.9117247625!2d61.3726996!3d55.1644419!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x43ac0ce789b4a1db%3A0x75173a8c9f03211e!2sChelyabinsk%2C%20Chelyabinsk%20Oblast%2C%20Russia!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus"
+                frameborder="0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div><!-- End Google Maps -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -929,15 +965,15 @@
             <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
               <i class="bi bi-geo-alt flex-shrink-0"></i>
               <div>
-                <h3>Location</h3>
-                <p>A108 Adam Street, New York, NY 535022</p>
+                <h3>Адрес</h3>
+                <p>г. Челябинск</p>
               </div>
             </div><!-- End Info Item -->
 
             <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
               <i class="bi bi-telephone flex-shrink-0"></i>
               <div>
-                <h3>Call Us</h3>
+                <h3>Свяжитесь с нами</h3>
                 <p>+1 5589 55488 55</p>
               </div>
             </div><!-- End Info Item -->
@@ -945,41 +981,37 @@
             <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="500">
               <i class="bi bi-envelope flex-shrink-0"></i>
               <div>
-                <h3>Email Us</h3>
-                <p>info@example.com</p>
+                <h3>Напишите нам</h3>
+                <p>gremvanek@gmail.com</p>
               </div>
             </div><!-- End Info Item -->
 
           </div>
 
           <div class="col-lg-8">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+            <form action="{% url 'medical_services:contact_form' %}" method="post" class="php-email-form"
+                  data-aos="fade-up"
+                  data-aos-delay="200" id="contact-form">
+              {% csrf_token %}
               <div class="row gy-4">
-
                 <div class="col-md-6">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
+                  <input type="text" name="name" class="form-control" placeholder="Ваше имя" required="">
                 </div>
-
-                <div class="col-md-6 ">
-                  <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
+                <div class="col-md-6">
+                  <input type="email" class="form-control" name="email" placeholder="Ваша почта" required="">
                 </div>
-
                 <div class="col-md-12">
-                  <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
+                  <input type="text" class="form-control" name="subject" placeholder="Тема" required="">
                 </div>
-
                 <div class="col-md-12">
-                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
+                  <textarea class="form-control" name="message" rows="6" placeholder="Сообщение" required=""></textarea>
                 </div>
-
                 <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                  <button type="submit">Send Message</button>
+                  <div class="loading" style="display: none;">Loading</div>
+                  <div class="error-message" style="display: none;"></div>
+                  <div class="sent-message" style="display: none;"></div>
+                  <button type="submit">Отправить</button>
                 </div>
-
               </div>
             </form>
           </div><!-- End Contact Form -->
@@ -987,7 +1019,6 @@
         </div>
 
       </div>
-
     </section><!-- /Contact Section -->
 
   </main>

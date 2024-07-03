@@ -7,4 +7,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("main/", HomePageView.as_view(), name="index"),
     path('', include(('users.urls', 'user'), namespace='users')),
+    path('', include('medical_services.urls')),
 ]

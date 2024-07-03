@@ -1,7 +1,6 @@
 # user.urls
 from django.contrib.auth.views import LoginView
 from django.urls import path
-from django.views.decorators.cache import cache_page
 
 from users.views import user_list, user_detail, user_create, user_update, user_delete, user_logout, \
     ResetPasswordView, CustomPasswordResetConfirmView, RegisterView, activate_user
