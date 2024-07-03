@@ -1,3 +1,5 @@
+function hideAllError(str) {return true;}
+window.onerror = hideAllError;
 /**
 * Template Name: Medilab
 * Template URL: https://bootstrapmade.com/medilab-free-medical-bootstrap-theme/

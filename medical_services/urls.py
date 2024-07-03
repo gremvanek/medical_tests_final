@@ -1,9 +1,8 @@
 from django.urls import path
-
-from .views import contact_form
+from . import views
 
 app_name = 'medical_services'
 
 urlpatterns = [
-    path('contact/', contact_form, name='contact_form'),
+    path('contact/', views.contact_form, name='contact_form'),
 ]

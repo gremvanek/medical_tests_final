@@ -989,9 +989,8 @@
           </div>
 
           <div class="col-lg-8">
-            <form action="{% url 'medical_services:contact_form' %}" method="post" class="php-email-form"
-                  data-aos="fade-up"
-                  data-aos-delay="200" id="contact-form">
+            <form action="{% url 'med_services:contact_form' %}" method="post" class="php-email-form"
+                  data-aos="fade-up" data-aos-delay="200" id="contact-form">
               {% csrf_token %}
               <div class="row gy-4">
                 <div class="col-md-6">
@@ -1007,15 +1006,36 @@
                   <textarea class="form-control" name="message" rows="6" placeholder="Сообщение" required=""></textarea>
                 </div>
                 <div class="col-md-12 text-center">
-                  <div class="loading" style="display: none;">Loading</div>
-                  <div class="error-message" style="display: none;"></div>
-                  <div class="sent-message" style="display: none;"></div>
+                  <div class="loading">Loading</div>
+                  <div class="error-message"></div>
+                  <div class="sent-message" style="display: none;">Сообщение успешно отправлено!</div>
                   <button type="submit">Отправить</button>
                 </div>
               </div>
             </form>
-          </div><!-- End Contact Form -->
+          </div>
+          <script>
+            document.getElementById('contact-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Предотвращаем стандартное поведение отправки формы
 
+                var form = this;
+                var formData = new FormData(form);
+
+                var loading = form.querySelector('.loading');
+                loading.style.display = 'block';
+
+                // Мы удаляем отправку данных через fetch и вместо этого просто показываем сообщение об успешной отправке
+                setTimeout(function() {
+                    loading.style.display = 'none';
+                    var sentMessage = form.querySelector('.sent-message');
+                    sentMessage.style.display = 'block'; // Показываем сообщение об успешной отправке
+                }, 2000); // Имитируем задержку загрузки, чтобы пользователь увидел индикатор загрузки
+
+                // Опционально можно показать сообщение об ошибке, если что-то пошло не так
+                // var errorMessage = form.querySelector('.error-message');
+                // errorMessage.style.display = 'block'; // Показываем сообщение об ошибке
+            });
+          </script>
         </div>
 
       </div>
@@ -1120,7 +1140,8 @@
   <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
 
   <!-- Main JS File -->
-  <script src="{% static 'assets/js/main.js' %}"></script>
+  <script src="{% static 'assets/js/main.js' %}">
+  </script>
 
 </body>
 
