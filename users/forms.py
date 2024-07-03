@@ -1,6 +1,5 @@
 # user.forms
 from django import forms
-from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import BooleanField
 
@@ -37,7 +36,6 @@ class UserForm(forms.ModelForm):
 
 
 class CustomPasswordResetForm(forms.Form):
-    User = get_user_model()
     email = forms.EmailField(
         label="Email",
         max_length=254,

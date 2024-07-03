@@ -5,6 +5,6 @@ from medical_services.views import HomePageView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", HomePageView.as_view(), name="index"),
+    path("main/", HomePageView.as_view(), name="index"),
     path('', include(('users.urls', 'user'), namespace='users')),
 ]

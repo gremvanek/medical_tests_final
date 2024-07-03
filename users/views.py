@@ -3,7 +3,6 @@ import random
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordResetConfirmView
 from django.core.exceptions import ObjectDoesNotExist
@@ -14,8 +13,9 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.generic import FormView, CreateView
 
+from config import settings
 from config.settings import EMAIL_HOST_USER
-from .forms import UserForm, UserRegisterForm
+from .forms import UserForm, UserRegisterForm, CustomPasswordResetForm
 from .models import User
 
 
@@ -121,7 +121,7 @@ class RegisterView(CreateView):
         )
         message = (
             f"Пожалуйста, подтвердите ваш адрес электронной почты, перейдя по ссылке: "
-            f'<a href="{verification_link}">{verification_link}</a>'
+            f'{verification_link}'
         )
         send_mail(
             "Подтверждение адреса электронной почты",
@@ -140,7 +140,7 @@ class RegisterView(CreateView):
 
 # Сброс пароля пользователя
 class ResetPasswordView(FormView):
-    form_class = PasswordResetForm
+    form_class = CustomPasswordResetForm
     template_name = "users/change_password.html"
     success_url = reverse_lazy("users:u_login")
 
@@ -154,14 +154,12 @@ class ResetPasswordView(FormView):
 
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            reset_password_link = (
-                f"http://{self.request.get_host()}/reset_password/{uid}/{token}/"
-            )
+            reset_password_link = f"http://{self.request.get_host()}/reset_password/{uid}/{token}/"
             send_mail(
                 "Сброс пароля",
-                f"Ваш новый пароль: {new_password}. Или перейдите по ссылке для установки "
-                f"нового пароля: {reset_password_link}",
-                EMAIL_HOST_USER,
+                f"Ваш новый пароль: {new_password}. Или перейдите по ссылке для установки нового пароля: "
+                f"{reset_password_link}",
+                settings.EMAIL_HOST_USER,
                 [email],
                 fail_silently=False,
             )
@@ -172,7 +170,14 @@ class ResetPasswordView(FormView):
             )
         except ObjectDoesNotExist:
             messages.error(self.request, "Пользователь с таким email не найден.")
+            return self.form_invalid(form)
+
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context
 
 
 # Подтверждение сброса пароля пользователя

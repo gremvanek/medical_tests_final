@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Мной добавление апсы
+    # Мной добавление apps
     "users",
     "medical_services",
 ]
@@ -128,7 +128,7 @@ AUTH_USER_MODEL = "users.User"
 LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "users:login"
-# Настройки для супер пользоваетля
+# Настройки для супер пользователя
 ROOT_EMAIL = os.getenv("ROOT_EMAIL")
 ROOT_PASSWORD = os.getenv("ROOT_PASSWORD")
 # Настройки для рассылки сообщений

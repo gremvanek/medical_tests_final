@@ -43,11 +43,8 @@ class User(AbstractUser):
                 "Может блокировать пользователей",
             ),  # Разрешение на блокировку пользователей
         ]
-
+    username = None
     email = models.EmailField(unique=True, verbose_name="Почта")
-    username = models.CharField(
-        max_length=150, unique=True, verbose_name="Имя пользователя"
-    )
 
     phone = models.CharField(max_length=35, verbose_name="Номер телефона", **NULLABLE)
     avatar = models.ImageField(upload_to="users/", verbose_name="Аватар", **NULLABLE)

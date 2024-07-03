@@ -104,6 +104,16 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-smtp-ssl"
+version = "1.0"
+description = "SMTP SSL email backend for Django"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-smtp-ssl-1.0.zip", hash = "sha256:282863d5905e03686b6555ac788aa732842695d6f9cf1dcfa66d898abb7565d0"},
+]
+
+[[package]]
 name = "flake8"
 version = "7.1.0"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -444,4 +454,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "239fd8a323fd30a58798c1a3dcd1990133d9fde1ed584d5192175b1100437a25"
+content-hash = "b612eb01a2cfb9ab00cb51323d3f15a663829e49129e7a8ab324a458fded68c3"
