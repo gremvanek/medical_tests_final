@@ -121,7 +121,7 @@ class RegisterView(CreateView):
         )
         message = (
             f"Пожалуйста, подтвердите ваш адрес электронной почты, перейдя по ссылке: "
-            f'{verification_link}'
+            f"{verification_link}"
         )
         send_mail(
             "Подтверждение адреса электронной почты",
@@ -154,7 +154,9 @@ class ResetPasswordView(FormView):
 
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            reset_password_link = f"http://{self.request.get_host()}/reset_password/{uid}/{token}/"
+            reset_password_link = (
+                f"http://{self.request.get_host()}/reset_password/{uid}/{token}/"
+            )
             send_mail(
                 "Сброс пароля",
                 f"Ваш новый пароль: {new_password}. Или перейдите по ссылке для установки нового пароля: "
@@ -176,7 +178,7 @@ class ResetPasswordView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
+        context["user"] = self.request.user
         return context
 
 

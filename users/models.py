@@ -43,6 +43,7 @@ class User(AbstractUser):
                 "Может блокировать пользователей",
             ),  # Разрешение на блокировку пользователей
         ]
+
     username = None
     email = models.EmailField(unique=True, verbose_name="Почта")
 
