@@ -8,6 +8,7 @@ NULLABLE = {"null": True, "blank": True}
 class Category(models.Model):
     """Категории услуг"""
 
+    objects = models.Manager
     name = models.CharField(max_length=100, verbose_name="Название категории")
     description = models.TextField(verbose_name="Описание услуги")
     image = models.ImageField(
@@ -25,6 +26,7 @@ class Category(models.Model):
 class Service(models.Model):
     """Медицинская услуга"""
 
+    objects = models.Manager
     name = models.CharField(max_length=100, verbose_name="Название мед.услуги")
     description = models.TextField(verbose_name="Описание мед.услуги")
     image = models.ImageField(
@@ -50,6 +52,7 @@ class Service(models.Model):
 class Cart(models.Model):
     """Корзина"""
 
+    objects = models.Manager
     client = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Клиент"
     )
