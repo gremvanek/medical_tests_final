@@ -1,6 +1,6 @@
 # user.forms
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import BooleanField
 
 from .models import User
@@ -51,3 +51,13 @@ class CustomPasswordResetForm(forms.Form):
 
 class VerificationCodeResetForm(forms.Form):
     email = forms.EmailField(label="Email")
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(label='Имя пользователя')
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'autofocus': True})
+        self.fields['password'].widget.attrs.update({'class': 'form-control'})
