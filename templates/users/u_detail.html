@@ -1,15 +1,27 @@
-{% extends 'index.html' %}
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+{% endblock %}
 
 {% block content %}
-  <div style="max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: rgba(255, 255, 255, 0.8);">
-    <h2>Детали пользователя</h2>
-    <p>Email: {{ user.email }}</p>
-    <p>Телефон: {{user.phone}}</p>
-    <p>Аватар: {{ user.avatar }}</p>
-    <p>Страна: {{user.country}}</p>
-    <p>Имя пользователя: {{user.username}}</p>
-<!--    <p>Верификация: {{ user.is_verified }}</p>-->
-<!--    <p>Код верификации: {{ user.verification_code }}</p>-->
-<!--    <p>Права доступа: {{ user.have_permissions }}</p>   -->
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h2 class="card-title">Детали пользователя</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-text">Email: {{ user.email }}</p>
+          <p class="card-text">Телефон: {{ user.phone }}</p>
+          <p class="card-text">Аватар: {{ user.avatar }}</p>
+          <p class="card-text">Страна: {{ user.country }}</p>
+          <p class="card-text">Имя пользователя: {{ user.username }}</p>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 {% endblock %}

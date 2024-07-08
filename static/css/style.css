@@ -1,5 +1,5 @@
 .container {
-    max-width: 600px;
+    max-width: 1000px;
     margin: auto;
 }
 
@@ -70,3 +70,4 @@
     border: 1px solid transparent;
     border-radius: .25rem;
 }
+

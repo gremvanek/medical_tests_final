@@ -1,0 +1,39 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block title %}
+    Список категорий
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <div class="card shadow">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="text-center mb-5">Список категорий</h2>
+                    <div class="mb-3 text-center">
+                        <a href="{% url 'medical_services:category-create' %}" class="btn btn-primary">Добавить категорию</a>
+                    </div>
+                    <ul class="list-group">
+                        {% for category in categories %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ category.name }}
+                                <div>
+                                    <a href="{% url 'medical_services:category-update' category.pk %}" class="btn btn-warning btn-sm">Изменить</a>
+                                    <form action="{% url 'medical_services:category-delete' category.pk %}" method="post" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

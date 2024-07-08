@@ -1,10 +1,10 @@
 import random
 
 from django.contrib import messages
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.views import PasswordResetConfirmView
+from django.contrib.auth.views import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,7 +15,7 @@ from django.views.generic import FormView, CreateView
 
 from config import settings
 from config.settings import EMAIL_HOST_USER
-from .forms import UserForm, UserRegisterForm, CustomPasswordResetForm
+from .forms import UserForm, UserRegisterForm, CustomPasswordResetForm, LoginForm
 from .models import User
 
 
@@ -25,6 +25,24 @@ from .models import User
 def user_list(request):
     users = User.objects.all()
     return render(request, "users/u_list.html", {"users": users})
+
+
+def user_login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("home")  # Подставьте URL для перехода после входа
+            else:
+                form.add_error(None, "Неверные имя пользователя или пароль.")
+    else:
+        form = LoginForm()
+
+    return render(request, "registration/login.html", {"form": form})
 
 
 # Получение пользователя или обработка исключения
@@ -78,11 +96,10 @@ def user_delete(request, pk):
 
 
 # Подтверждение почтового адреса пользователя
-def activate_user(request):
-    key = request.GET.get("token")
-    if key:
+def activate_user(request, token):
+    if token:
         try:
-            user = User.objects.get(is_verified=False, token=key)
+            user = User.objects.get(is_verified=False, token=token)
             user.is_verified = True
             user.token = None
             user.save()
@@ -91,7 +108,8 @@ def activate_user(request):
             messages.error(request, "Пользователь не найден для верификации.")
     else:
         messages.error(request, "Неверный запрос для верификации.")
-    return redirect(reverse_lazy("users:u_login"))
+
+    return redirect("users:u_verification")
 
 
 # Выход пользователя
@@ -107,7 +125,7 @@ class RegisterView(CreateView):
     model = User
     form_class = UserRegisterForm
     template_name = "users/register.html"
-    success_url = reverse_lazy("users:u_login")
+    success_url = reverse_lazy("users:u_success")
 
     def form_valid(self, form):
         new_user = form.save(commit=False)
@@ -116,12 +134,12 @@ class RegisterView(CreateView):
         new_user.token = secret_token
         new_user.save()
 
-        verification_link = (
-            f"http://{self.request.get_host()}/user/verify/?token={secret_token}"
-        )
+        # Используйте reverse или reverse_lazy для создания URL
+        verification_url = reverse_lazy("users:verify", kwargs={"token": secret_token})
+
         message = (
             f"Пожалуйста, подтвердите ваш адрес электронной почты, перейдя по ссылке: "
-            f'{verification_link}'
+            f"{self.request.build_absolute_uri(verification_url)}"
         )
         send_mail(
             "Подтверждение адреса электронной почты",
@@ -136,6 +154,16 @@ class RegisterView(CreateView):
             "На ваш email отправлено письмо с инструкциями по верификации.",
         )
         return super().form_valid(form)
+
+
+def user_registration_success(request):
+    template_name = "users/u_register.html"
+    return render(request, template_name)
+
+
+def user_verification(request):
+    template_name = "users/u_verification.html"
+    return render(request, template_name)
 
 
 # Сброс пароля пользователя
@@ -154,7 +182,9 @@ class ResetPasswordView(FormView):
 
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            reset_password_link = f"http://{self.request.get_host()}/reset_password/{uid}/{token}/"
+            reset_password_link = (
+                f"http://{self.request.get_host()}/reset_password/{uid}/{token}/"
+            )
             send_mail(
                 "Сброс пароля",
                 f"Ваш новый пароль: {new_password}. Или перейдите по ссылке для установки нового пароля: "
@@ -176,21 +206,11 @@ class ResetPasswordView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
+        context["user"] = self.request.user
         return context
 
 
 # Подтверждение сброса пароля пользователя
-class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = "users/change_password.html"
+class CustomPasswordResetCompleteView(TemplateView):
+    template_name = "users/password_reset_confirm.html"
     success_url = reverse_lazy("users:u_login")
-
-    def form_valid(self, form):
-        messages.success(
-            self.request, "Пароль успешно изменен. Войдите с новым паролем."
-        )
-        return redirect(self.success_url)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "Ссылка для сброса пароля недействительна.")
-        return super().form_invalid(form)
