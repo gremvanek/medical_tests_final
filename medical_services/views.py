@@ -1,204 +1,168 @@
-# medical_services/views.py
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
-
-from config import settings
 from .forms import CategoryForm, ServiceForm, CartForm
 from .models import Category, Service, Cart
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.views.generic import TemplateView
 
 
 class HomePageView(TemplateView):
     template_name = "main/index.html"
 
 
-@require_POST
 def contact_form(request):
-    if request.method == "POST":
-        name = request.POST.get("name", "")
-        email = request.POST.get("email", "")
-        subject = request.POST.get("subject", "")
-        message = request.POST.get("message", "")
+    if request.method == 'POST':
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
+        subject = request.POST.get('subject', '')
+        message = request.POST.get('message', '')
 
         # Отправка электронной почты
         send_mail(
             subject,
-            f"From: {name} <{email}>\n\n{message}",
+            f'From: {name} <{email}>\n\n{message}',
             email,  # Используем email отправителя
-            [settings.EMAIL_HOST_USER],
+            ['gremvanek@gmail.com'],  # Замените на адрес получателя
             fail_silently=False,
         )
 
+        # Возвращаем сообщение об успешной отправке
+        success_message = 'Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время!'
+        return HttpResponse(success_message)
 
-# Декоратор login_required для всех представлений
-@login_required
-def login_required_decorator(view_func):
-    return method_decorator(login_required)(view_func)
+    # Если запрос не POST, возвращаем пустой ответ с кодом 400
+    return HttpResponse('Bad Request', status=400)
 
 
 # Представление для создания новой категории
-class CategoryCreateView(View):
-
-    @login_required_decorator
-    def get(self, request):
-        form = CategoryForm()
-        return render(request, 'category_form.html', {'form': form})
-
-    @login_required_decorator
-    def post(self, request):
+@login_required
+def category_create_view(request):
+    if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('category-list')
-        return render(request, 'category_form.html', {'form': form})
+            return redirect('medical_services:category-list')
+    else:
+        form = CategoryForm()
+    return render(request, 'medical_services/category_form.html', {'form': form})
 
 
 # Представление для чтения списка категорий
-class CategoryListView(View):
-
-    @login_required_decorator
-    def get(self, request):
-        categories = Category.objects.all()
-        return render(request, 'category_list.html', {'categories': categories})
+@login_required
+def category_list_view(request):
+    categories = Category.objects.all()
+    return render(request, 'medical_services/category_list.html', {'categories': categories})
 
 
 # Представление для обновления категории
-class CategoryUpdateView(View):
-
-    @login_required_decorator
-    def get(self, request, pk):
-        category = get_object_or_404(Category, pk=pk)
-        form = CategoryForm(instance=category)
-        return render(request, 'category_form.html', {'form': form})
-
-    @login_required_decorator
-    def post(self, request, pk):
-        category = get_object_or_404(Category, pk=pk)
+@login_required
+def category_update_view(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES, instance=category)
         if form.is_valid():
             form.save()
-            return redirect('category-list')
-        return render(request, 'category_form.html', {'form': form})
+            return redirect('medical_services:category-list')
+    else:
+        form = CategoryForm(instance=category)
+    return render(request, 'medical_services/category_form.html', {'form': form})
 
 
 # Представление для удаления категории
-class CategoryDeleteView(View):
-
-    @login_required_decorator
-    def post(self, pk):
-        category = get_object_or_404(Category, pk=pk)
-        category.delete()
-        return redirect('category-list')
+@login_required
+@require_POST  # Декоратор для POST-запросов
+def category_delete_view(pk):
+    category = get_object_or_404(Category, pk=pk)
+    category.delete()
+    return redirect('medical_services:category-list')
 
 
 # Представление для создания новой услуги
-class ServiceCreateView(View):
-
-    @login_required_decorator
-    def get(self, request):
-        form = ServiceForm()
-        return render(request, 'service_form.html', {'form': form})
-
-    @login_required_decorator
-    def post(self, request):
+@login_required
+def service_create_view(request):
+    if request.method == 'POST':
         form = ServiceForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('medical_services:services-list')
-        return render(request, 'service_form.html', {'form': form})
+    else:
+        form = ServiceForm()
+    return render(request, 'medical_services/service_form.html', {'form': form})
 
 
 # Представление для чтения списка услуг
-class ServiceListView(View):
-
-    @login_required_decorator
-    def get(self, request):
-        services = Service.objects.all()
-        return render(request, 'services_list.html', {'services': services})
+@login_required
+def service_list_view(request):
+    services = Service.objects.all()
+    return render(request, 'medical_services/services_list.html', {'services': services})
 
 
 # Представление для обновления услуги
-class ServiceUpdateView(View):
-
-    @login_required_decorator
-    def get(self, request, pk):
-        services = get_object_or_404(Service, pk=pk)
-        form = ServiceForm(instance=services)
-        return render(request, 'service_form.html', {'form': form})
-
-    @login_required_decorator
-    def post(self, request, pk):
-        services = get_object_or_404(Service, pk=pk)
-        form = ServiceForm(request.POST, request.FILES, instance=services)
+@login_required
+def service_update_view(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, request.FILES, instance=service)
         if form.is_valid():
             form.save()
-            return redirect('services_list')
-        return render(request, 'service_form.html', {'form': form})
+            return redirect('medical_services:services-list')
+    else:
+        form = ServiceForm(instance=service)
+    return render(request, 'medical_services/service_form.html', {'form': form})
 
 
 # Представление для удаления услуги
-class ServiceDeleteView(View):
+@login_required
+@require_POST  # Декоратор для POST-запросов
+def service_delete_view(pk):
+    service = get_object_or_404(Service, pk=pk)
+    service.delete()
+    return redirect('medical_services:services-list')
 
-    @login_required_decorator
-    def post(self, pk):
-        services = get_object_or_404(Service, pk=pk)
-        services.delete()
-        return redirect('services_list')
 
-
-class CartCreateView(View):
-
-    @login_required_decorator
-    def get(self, request):
-        form = CartForm()
-        return render(request, 'cart_form.html', {'form': form})
-
-    @login_required_decorator
-    def post(self, request):
+# Представление для создания новой корзины
+@login_required
+def cart_create_view(request):
+    if request.method == 'POST':
         form = CartForm(request.POST)
         if form.is_valid():
             cart = form.save(commit=False)
-            cart.client = request.user  # Привязка текущего пользователя к корзине
+            cart.client = request.user
             cart.save()
-            form.save_m2m()  # Сохранение ManyToMany полей
-            return redirect('cart-list')  # Перенаправление на страницу списка корзин
-        return render(request, 'cart_form.html', {'form': form})
+            form.save_m2m()
+            return redirect('medical_services:cart-list')
+    else:
+        form = CartForm()
+    return render(request, 'medical_services/cart_form.html', {'form': form})
 
 
-class CartListView(View):
+# Представление для чтения списка корзин
+@login_required
+def cart_list_view(request):
+    carts = Cart.objects.all()
+    return render(request, 'medical_services/cart_list.html', {'carts': carts})
 
-    @login_required_decorator
-    def get(self, request):
-        carts = Cart.objects.all()
-        return render(request, 'cart_list.html', {'carts': carts})
 
-
-class CartUpdateView(View):
-
-    @login_required_decorator
-    def get(self, request, pk):
-        cart = get_object_or_404(Cart, pk=pk)
-        form = CartForm(instance=cart)
-        return render(request, 'cart_form.html', {'form': form})
-
-    @login_required_decorator
-    def post(self, request, pk):
-        cart = get_object_or_404(Cart, pk=pk)
+# Представление для обновления корзины
+@login_required
+def cart_update_view(request, pk):
+    cart = get_object_or_404(Cart, pk=pk)
+    if request.method == 'POST':
         form = CartForm(request.POST, instance=cart)
         if form.is_valid():
             form.save()
-            return redirect('cart-list')
-        return render(request, 'cart_form.html', {'form': form})
+            return redirect('medical_services:cart-list')
+    else:
+        form = CartForm(instance=cart)
+    return render(request, 'medical_services/cart_form.html', {'form': form})
 
 
-class CartDeleteView(View):
-
-    @login_required_decorator
-    def post(self, pk):
-        cart = get_object_or_404(Cart, pk=pk)
-        cart.delete()
-        return redirect('cart-list')
+# Представление для удаления корзины
+@login_required
+@require_POST  # Декоратор для POST-запросов
+def cart_delete_view(pk):
+    cart = get_object_or_404(Cart, pk=pk)
+    cart.delete()
+    return redirect('medical_services:cart-list')

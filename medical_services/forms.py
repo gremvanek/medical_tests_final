@@ -23,6 +23,9 @@ class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
         fields = ("name", "description", "image", "category", "price", "deadline")
+        widgets = {
+            'deadline': forms.DateInput(attrs={'type': 'date'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
