@@ -54,10 +54,12 @@ class VerificationCodeResetForm(forms.Form):
 
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='Имя пользователя')
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    username = forms.CharField(label="Имя пользователя")
+    password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class': 'form-control', 'autofocus': True})
-        self.fields['password'].widget.attrs.update({'class': 'form-control'})
+        self.fields["username"].widget.attrs.update(
+            {"class": "form-control", "autofocus": True}
+        )
+        self.fields["password"].widget.attrs.update({"class": "form-control"})

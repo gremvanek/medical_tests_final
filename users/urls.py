@@ -9,7 +9,9 @@ from users.views import (
     user_delete,
     user_logout,
     RegisterView,
-    activate_user, user_registration_success, user_verification,
+    activate_user,
+    user_registration_success,
+    user_verification,
 )
 
 app_name = "users"
@@ -25,7 +27,7 @@ urlpatterns = [
     path(
         "login/", LoginView.as_view(template_name="users/u_login.html"), name="u_login"
     ),
-    path('user/verify/<str:token>/', activate_user, name='verify'),
+    path("user/verify/<str:token>/", activate_user, name="verify"),
     path("logout/", user_logout, name="u_logout"),
     path("register/", RegisterView.as_view(), name="u_register"),
 ]

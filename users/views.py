@@ -28,21 +28,21 @@ def user_list(request):
 
 
 def user_login(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')  # Подставьте URL для перехода после входа
+                return redirect("home")  # Подставьте URL для перехода после входа
             else:
-                form.add_error(None, 'Неверные имя пользователя или пароль.')
+                form.add_error(None, "Неверные имя пользователя или пароль.")
     else:
         form = LoginForm()
 
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, "registration/login.html", {"form": form})
 
 
 # Получение пользователя или обработка исключения
@@ -109,7 +109,7 @@ def activate_user(request, token):
     else:
         messages.error(request, "Неверный запрос для верификации.")
 
-    return redirect('users:u_verification')
+    return redirect("users:u_verification")
 
 
 # Выход пользователя
@@ -135,7 +135,7 @@ class RegisterView(CreateView):
         new_user.save()
 
         # Используйте reverse или reverse_lazy для создания URL
-        verification_url = reverse_lazy("users:verify", kwargs={'token': secret_token})
+        verification_url = reverse_lazy("users:verify", kwargs={"token": secret_token})
 
         message = (
             f"Пожалуйста, подтвердите ваш адрес электронной почты, перейдя по ссылке: "
@@ -212,5 +212,5 @@ class ResetPasswordView(FormView):
 
 # Подтверждение сброса пароля пользователя
 class CustomPasswordResetCompleteView(TemplateView):
-    template_name = 'users/password_reset_confirm.html'
-    success_url = reverse_lazy('users:u_login')
+    template_name = "users/password_reset_confirm.html"
+    success_url = reverse_lazy("users:u_login")

@@ -24,7 +24,7 @@ class ServiceForm(forms.ModelForm):
         model = Service
         fields = ("name", "description", "image", "category", "price", "deadline")
         widgets = {
-            'deadline': forms.DateInput(attrs={'type': 'date'}),
+            "deadline": forms.DateInput(attrs={"type": "date"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -36,7 +36,9 @@ class ServiceForm(forms.ModelForm):
 class CartForm(forms.ModelForm):
     """Форма для модели корзины"""
 
-    services = forms.ModelMultipleChoiceField(queryset=Service.objects.all(), widget=forms.CheckboxSelectMultiple)
+    services = forms.ModelMultipleChoiceField(
+        queryset=Service.objects.all(), widget=forms.CheckboxSelectMultiple
+    )
 
     class Meta:
         model = Cart
@@ -44,6 +46,8 @@ class CartForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["client"].queryset = User.objects.filter(is_staff=False)  # Ограничение на выбор клиента
+        self.fields["client"].queryset = User.objects.filter(
+            is_staff=False
+        )  # Ограничение на выбор клиента
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
